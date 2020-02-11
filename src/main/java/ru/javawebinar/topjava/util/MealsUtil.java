@@ -2,29 +2,16 @@ package ru.javawebinar.topjava.util;
 
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
+import ru.javawebinar.topjava.storage.MealStorage;
+import ru.javawebinar.topjava.storage.MemoryMealStorage;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MealsUtil {
-    private static MealStorage mealStorage = MemoryMealStorage.getInstance();
-
-    private static List<Meal> meals = mealStorage.getAll();
-
-    public static List<Meal> getMeals() {
-        return meals;
-    }
-
-    public static void main(String[] args) {
-        List<MealTo> mealsTo = filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
-        mealsTo.forEach(System.out::println);
-    }
-
     public static List<MealTo> filteredByStreams(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
                 .collect(

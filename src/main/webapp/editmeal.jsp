@@ -13,11 +13,11 @@
 
 <form method="post" action="meals">
     <c:set var="formatter" value="${formatter}" />
-    <input type="hidden" name="id" value="${mealTo.getId()}">
-    Дата и время <input type="datetime-local" name="date" value="${mealTo.getDateTime().format(formatter)}"><br />
-    Описание <input type="text" name="description" value="${mealTo.getDescription()}"><br />
-    Калории <input type="text" name="calories" value="${mealTo.getCalories()}"><br />
-    <input type="submit" name="action" value="${mealTo.getId() == -1 ? 'add' : 'edit'}">
+    <input type="hidden" name="id" value="${mealTo.id}">
+    Дата и время <input type="datetime-local" name="date" value="${mealTo.dateTime.format(formatter)}"><br />
+    Описание <input type="text" name="description" value="${mealTo.description}"><br />
+    Калории <input type="text" name="calories" value="${mealTo.calories}"><br />
+    <input type="submit" name="action" value="${mealTo.id == null ? 'add' : 'edit'}">
 </form>
 
 </body>

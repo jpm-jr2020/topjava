@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
@@ -31,14 +30,14 @@ public class MealRestController {
 
     public List<MealTo> getAll() {
         log.info("getAll");
-        return getAll(null, null, null, null);
+        List<Meal> mealsByDate = service.getAll(SecurityUtil.authUserId());
+        return MealsUtil.getTos(mealsByDate, SecurityUtil.authUserCaloriesPerDay());
     }
 
-    public List<MealTo> getAll(LocalDate date1, LocalDate date2, LocalTime time1, LocalTime time2) {
+    public List<MealTo> getAllFiltered(LocalDate date1, LocalDate date2, LocalTime time1, LocalTime time2) {
         log.info("getAll filtered");
-        List<Meal> mealsByDate = service.getAll(SecurityUtil.authUserId(), date1, date2);
-        return MealsUtil.filteredByStreams(mealsByDate, SecurityUtil.authUserCaloriesPerDay(),
-                meal -> DateTimeUtil.isBetweenInclusive(meal.getTime(), time1, time2));
+        List<Meal> mealsByDate = service.getAllFiltered(SecurityUtil.authUserId(), date1, date2);
+        return MealsUtil.getFilteredTos(mealsByDate, SecurityUtil.authUserCaloriesPerDay(), time1, time2);
     }
 
     public Meal get(int id) {
@@ -47,10 +46,9 @@ public class MealRestController {
     }
 
     public Meal create(Meal meal) {
-        Meal userMeal = new Meal(SecurityUtil.authUserId(), meal.getDateTime(),
-                meal.getDescription(), meal.getCalories());
-        log.info("create {}", userMeal);
-        return service.create(userMeal, SecurityUtil.authUserId());
+        log.info("create {}", meal);
+        checkNew(meal);
+        return service.create(meal, SecurityUtil.authUserId());
     }
 
     public void delete(int id) {
@@ -59,11 +57,9 @@ public class MealRestController {
     }
 
     public void update(Meal meal, int id) {
-        Meal userMeal = new Meal(SecurityUtil.authUserId(), meal.getId(), meal.getDateTime(),
-                meal.getDescription(), meal.getCalories());
-        log.info("update {} with id={}", userMeal, id);
-        assureIdConsistent(userMeal, id);
-        service.update(userMeal, SecurityUtil.authUserId());
+        log.info("update {} with id={}", meal, id);
+        assureIdConsistent(meal, id);
+        service.update(meal, SecurityUtil.authUserId());
     }
 
 }

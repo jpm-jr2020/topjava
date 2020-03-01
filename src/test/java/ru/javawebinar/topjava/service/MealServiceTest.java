@@ -1,20 +1,28 @@
 package ru.javawebinar.topjava.service;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.*;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.StopWatch;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Arrays;
 
+import static org.slf4j.LoggerFactory.getLogger;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
@@ -26,11 +34,46 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @RunWith(SpringJUnit4ClassRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
-
     @Autowired
     private MealService service;
     @Autowired
     private MealRepository repository;
+
+    private static final Logger log = getLogger(MealServiceTest.class);
+    private static StopWatch timers;
+
+    @Rule
+    public final ExpectedException thrown = ExpectedException.none();
+
+    @ClassRule
+    public static final ExternalResource timing = new ExternalResource() {
+        @Override
+        protected void before() throws Throwable {
+            timers = new StopWatch();
+        }
+
+        @Override
+        protected void after() {
+            log.info("Duration summary");
+            Arrays.stream(timers.getTaskInfo())
+                .forEach(task -> log.info("Test {}, duration {} ms", task.getTaskName(), task.getTimeMillis()));
+            log.info("Total duration {} ms", timers.getTotalTimeMillis());
+        }
+    };
+
+    @Rule
+    public final TestRule testWatcher = new TestWatcher() {
+        @Override
+        public void starting(Description description) {
+            timers.start(description.getMethodName());
+        }
+
+        @Override
+        public void finished(Description description) {
+            timers.stop();
+            log.info("Test {} finished, duration {} ms", description.getMethodName(), timers.getLastTaskTimeMillis());
+        }
+    };
 
     @Test
     public void delete() throws Exception {
@@ -38,13 +81,17 @@ public class MealServiceTest {
         Assert.assertNull(repository.get(MEAL1_ID, USER_ID));
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void deleteNotFound() throws Exception {
+        thrown.expect(NotFoundException.class);
+        thrown.expectMessage("Not found entity with");
         service.delete(1, USER_ID);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void deleteNotOwn() throws Exception {
+        thrown.expect(NotFoundException.class);
+        thrown.expectMessage("Not found entity with");
         service.delete(MEAL1_ID, ADMIN_ID);
     }
 
@@ -64,13 +111,17 @@ public class MealServiceTest {
         MEAL_MATCHER.assertMatch(actual, ADMIN_MEAL1);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void getNotFound() throws Exception {
+        thrown.expect(NotFoundException.class);
+        thrown.expectMessage("Not found entity with");
         service.get(1, USER_ID);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void getNotOwn() throws Exception {
+        thrown.expect(NotFoundException.class);
+        thrown.expectMessage("Not found entity with");
         service.get(MEAL1_ID, ADMIN_ID);
     }
 
@@ -81,8 +132,10 @@ public class MealServiceTest {
         MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void updateNotFound() throws Exception {
+        thrown.expect(NotFoundException.class);
+        thrown.expectMessage("Not found entity with");
         service.update(MEAL1, ADMIN_ID);
     }
 

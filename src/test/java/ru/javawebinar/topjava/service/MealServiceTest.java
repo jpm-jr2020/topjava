@@ -10,7 +10,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.util.StopWatch;
+//import org.springframework.util.StopWatch;
+import org.junit.rules.Stopwatch;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -18,6 +19,8 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.slf4j.LoggerFactory.getLogger;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -43,15 +46,11 @@ public class MealServiceTest {
 
     private static final Logger log = getLogger(MealServiceTest.class);
     private static final Logger statLog = getLogger("statistics");
-    private static StopWatch timers;
+    private static Map<String, Long> timers = new HashMap<>();
+    private static Long totalTime = new Long(0);
 
     @Rule
     public final ExpectedException thrown = ExpectedException.none();
-
-    @BeforeClass
-    public static void beforeClass() {
-        timers = new StopWatch();
-    }
 
     @AfterClass
     public static void afterClass() {
@@ -60,25 +59,19 @@ public class MealServiceTest {
         stats.append(ESCAPE_BLUE + "Tests duration:\n");
         stats.append(String.format(format, "Test name", "Duration"));
         stats.append(String.format(format, "-------------------------", "----------"));
-        Arrays.stream(timers.getTaskInfo())
-                .forEach(task -> stats.append(String.format(format, task.getTaskName(), task.getTimeMillis() + " ms")));
+        timers.forEach((k, v) -> stats.append(String.format(format, k, v + " us")));
         stats.append(String.format(format, "-------------------------", "----------"));
-        stats.append(String.format(format, "Total", timers.getTotalTimeMillis() + " ms" + ESCAPE_BLACK));
+        stats.append(String.format(format, "Total", totalTime + " us" + ESCAPE_BLACK));
         statLog.info(stats.toString());
     }
 
     @Rule
-    public final TestRule testWatcher = new TestWatcher() {
+    public final Stopwatch stopwatch = new Stopwatch() {
         @Override
-        public void starting(Description description) {
-            timers.start(description.getMethodName());
-        }
-
-        @Override
-        public void finished(Description description) {
-            timers.stop();
-            statLog.info(ESCAPE_GREEN + "Test {} finished, duration {} ms" + ESCAPE_BLACK, description.getMethodName(), timers.getLastTaskTimeMillis());
-//            log.info("" + "This text is red!" + "");
+        protected void finished(long nanos, Description description) {
+            timers.put(description.getMethodName(), nanos / 1000);
+            totalTime += nanos / 1000;
+            statLog.info(ESCAPE_GREEN + "Test {} finished, duration {} us" + ESCAPE_BLACK, description.getMethodName(), nanos / 1000);
         }
     };
 

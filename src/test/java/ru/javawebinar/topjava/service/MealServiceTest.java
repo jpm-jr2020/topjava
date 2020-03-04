@@ -1,9 +1,6 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.*;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
@@ -39,27 +36,36 @@ public class MealServiceTest {
     @Autowired
     private MealRepository repository;
 
+    private static final String ESCAPE_BLACK = "\u001B[0m";
+    private static final String ESCAPE_RED = "\u001B[31m";
+    private static final String ESCAPE_BLUE = "\u001B[34m";
+    private static final String ESCAPE_GREEN = "\u001B[32m";
+
     private static final Logger log = getLogger(MealServiceTest.class);
+    private static final Logger statLog = getLogger("statistics");
     private static StopWatch timers;
 
     @Rule
     public final ExpectedException thrown = ExpectedException.none();
 
-    @ClassRule
-    public static final ExternalResource timing = new ExternalResource() {
-        @Override
-        protected void before() throws Throwable {
-            timers = new StopWatch();
-        }
+    @BeforeClass
+    public static void beforeClass() {
+        timers = new StopWatch();
+    }
 
-        @Override
-        protected void after() {
-            log.info("Duration summary");
-            Arrays.stream(timers.getTaskInfo())
-                .forEach(task -> log.info("Test {}, duration {} ms", task.getTaskName(), task.getTimeMillis()));
-            log.info("Total duration {} ms", timers.getTotalTimeMillis());
-        }
-    };
+    @AfterClass
+    public static void afterClass() {
+        StringBuilder stats = new StringBuilder();
+        String format = "%-30s %10s %n";
+        stats.append(ESCAPE_BLUE + "Tests duration:\n");
+        stats.append(String.format(format, "Test name", "Duration"));
+        stats.append(String.format(format, "-------------------------", "----------"));
+        Arrays.stream(timers.getTaskInfo())
+                .forEach(task -> stats.append(String.format(format, task.getTaskName(), task.getTimeMillis() + " ms")));
+        stats.append(String.format(format, "-------------------------", "----------"));
+        stats.append(String.format(format, "Total", timers.getTotalTimeMillis() + " ms" + ESCAPE_BLACK));
+        statLog.info(stats.toString());
+    }
 
     @Rule
     public final TestRule testWatcher = new TestWatcher() {
@@ -71,7 +77,8 @@ public class MealServiceTest {
         @Override
         public void finished(Description description) {
             timers.stop();
-            log.info("Test {} finished, duration {} ms", description.getMethodName(), timers.getLastTaskTimeMillis());
+            statLog.info(ESCAPE_GREEN + "Test {} finished, duration {} ms" + ESCAPE_BLACK, description.getMethodName(), timers.getLastTaskTimeMillis());
+//            log.info("" + "This text is red!" + "");
         }
     };
 

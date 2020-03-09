@@ -35,7 +35,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
-public class MealServiceTest {
+public class MealServiceTest extends AbstractServiceTest {
     private static final Logger log = getLogger("result");
 
     private static StringBuilder results = new StringBuilder();
@@ -67,7 +67,7 @@ public class MealServiceTest {
 
     @Test
     public void delete() throws Exception {
-        service.delete(MEAL1_ID, USER_ID);
+            service.delete(MEAL1_ID, USER_ID);
         Assert.assertNull(repository.get(MEAL1_ID, USER_ID));
     }
 

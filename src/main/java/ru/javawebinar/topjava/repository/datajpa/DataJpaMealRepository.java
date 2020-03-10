@@ -33,14 +33,6 @@ public class DataJpaMealRepository implements MealRepository {
         }
         return crudRepository.save(meal);
     }
-//        meal.setUser(em.getReference(User.class, userId));
-//        if (meal.isNew()) {
-//        em.persist(meal);
-//        return meal;
-//    } else if (get(meal.getId(), userId) == null) {
-//        return null;
-//    }
-//        return em.merge(meal);
 
     @Override
     public boolean delete(int id, int userId) {

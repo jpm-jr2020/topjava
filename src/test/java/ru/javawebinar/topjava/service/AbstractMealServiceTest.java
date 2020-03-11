@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -16,9 +17,9 @@ import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     @Autowired
-    private MealService service;
+    protected MealService service;
     @Autowired
-    private MealRepository repository;
+    protected MealRepository repository;
 
     @Test
     public void delete() throws Exception {
@@ -96,5 +97,10 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     @Test
     public void getBetweenWithNullDates() throws Exception {
         MEAL_MATCHER.assertMatch(service.getBetweenInclusive(null, null, USER_ID), MEALS);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void getWithUser() throws Exception {
+        Meal meal = service.getWithUser(MEAL1_ID, USER_ID);
     }
 }

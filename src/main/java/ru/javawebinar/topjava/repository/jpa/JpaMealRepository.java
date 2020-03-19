@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-//@ActiveProfiles(resolver = ActiveDbProfileResolver.class)
 @Transactional(readOnly = true)
 public class JpaMealRepository implements MealRepository {
 

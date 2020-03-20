@@ -66,6 +66,14 @@
         <bean id="namedJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
             <constructor-arg ref="jdbcTemplate"/>
         </bean>
+
+        <bean class="ru.javawebinar.topjava.repository.JdbcUtil"/>
+
+        <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+            <property name="dataSource">
+                <ref bean="dataSource"/>
+            </property>
+        </bean>
     </beans>
 
     <beans profile="jpa,datajpa">

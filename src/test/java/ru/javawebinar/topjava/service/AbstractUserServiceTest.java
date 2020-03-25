@@ -7,7 +7,6 @@ import org.springframework.dao.DataAccessException;
 import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
-import ru.javawebinar.topjava.repository.CacheUtil;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -30,13 +29,9 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Autowired
     private CacheManager cacheManager;
 
-    @Autowired
-    protected CacheUtil cacheUtil;
-
     @Before
     public void setUp() throws Exception {
         cacheManager.getCache("users").clear();
-        cacheUtil.clear2ndLevelHibernateCache();
     }
 
     @Test
@@ -119,7 +114,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void createWithException() throws Exception {
-        Assume.assumeFalse(Arrays.asList(environment.getActiveProfiles()).contains(Profiles.JDBC));
+        Assume.assumeFalse(isJdbcTest());
         validateRootCause(() -> service.create(new User(null, "  ", "mail@yandex.ru", "password", Role.ROLE_USER)), ConstraintViolationException.class);
         validateRootCause(() -> service.create(new User(null, "User", "  ", "password", Role.ROLE_USER)), ConstraintViolationException.class);
         validateRootCause(() -> service.create(new User(null, "User", "mail@yandex.ru", "  ", Role.ROLE_USER)), ConstraintViolationException.class);

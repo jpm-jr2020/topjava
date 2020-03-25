@@ -67,8 +67,6 @@
             <constructor-arg ref="jdbcTemplate"/>
         </bean>
 
-        <bean class="ru.javawebinar.topjava.repository.JdbcUtil"/>
-
         <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
             <property name="dataSource">
                 <ref bean="dataSource"/>

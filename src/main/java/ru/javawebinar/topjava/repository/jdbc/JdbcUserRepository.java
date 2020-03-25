@@ -12,8 +12,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
-import ru.javawebinar.topjava.repository.JdbcUtil;
 import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.util.ValidationUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -50,17 +50,13 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     @Transactional
     public User save(User user) {
-        JdbcUtil.validate(user);
+        ValidationUtil.validate(user);
 
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
 
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
-
-            if (!user.getRoles().isEmpty()) {
-                insertRoles(user);
-            }
         } else {
             if (namedParameterJdbcTemplate.update(
                     "UPDATE users SET name=:name, email=:email, password=:password, " +
@@ -68,8 +64,10 @@ public class JdbcUserRepository implements UserRepository {
                 return null;
             } else {
                 jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.getId());
-                insertRoles(user);
             }
+        }
+        if (!user.getRoles().isEmpty()) {
+            insertRoles(user);
         }
         return user;
     }

@@ -23,18 +23,9 @@ public class MealRestController extends AbstractMealController {
         super(service);
     }
 
-    public Meal create(Meal meal) {
-        int userId = SecurityUtil.authUserId();
-        checkNew(meal);
-        log.info("create {} for user {}", meal, userId);
-        return service.create(meal, userId);
-    }
-
     public void update(Meal meal, int id) {
-        int userId = SecurityUtil.authUserId();
         assureIdConsistent(meal, id);
-        log.info("update {} for user {}", meal, userId);
-        service.update(meal, userId);
+        update(meal);
     }
 
     public List<MealTo> getBetween(@Nullable LocalDate startDate, @Nullable LocalTime startTime,

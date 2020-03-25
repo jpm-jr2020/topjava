@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 
@@ -20,19 +21,20 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 
 @Controller
+@RequestMapping("/meals")
 public class JspMealController extends AbstractMealController {
 
     public JspMealController(MealService service) {
         super(service);
     }
 
-    @GetMapping("/meals/")
+    @GetMapping("")
     public String getAll(Model model) {
         model.addAttribute("meals", getAll());
         return "meals";
     }
 
-    @GetMapping("/meals/filter")
+    @GetMapping("/filter")
     public String getFiltered(Model model, HttpServletRequest request) {
         LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
         LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
@@ -43,7 +45,7 @@ public class JspMealController extends AbstractMealController {
         return "meals";
     }
 
-    @GetMapping("/meals/create")
+    @GetMapping("/create")
     public String create(Model model) {
         model.addAttribute(
                 "meal",
@@ -51,19 +53,19 @@ public class JspMealController extends AbstractMealController {
         return "mealForm";
     }
 
-    @GetMapping("/meals/{id}")
+    @GetMapping("/{id}")
     public String get(Model model, @PathVariable String id) {
         model.addAttribute("meal", get(Integer.parseInt(id)));
         return "mealForm";
     }
 
-    @GetMapping("/meals/delete")
+    @GetMapping("/delete")
     public String delete(HttpServletRequest request) {
         delete(Integer.parseInt(request.getParameter("id")));
-        return "redirect:../meals/";
+        return "redirect:../meals";
     }
 
-    @PostMapping("/meals/")
+    @PostMapping("/")
     public String save(HttpServletRequest request) throws UnsupportedEncodingException {
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
@@ -71,12 +73,12 @@ public class JspMealController extends AbstractMealController {
                 Integer.parseInt(request.getParameter("calories")));
 
         if (StringUtils.isEmpty(request.getParameter("id"))) {
-            service.create(meal, getUserId());
+            create(meal);
         } else {
             meal.setId(Integer.parseInt(request.getParameter("id")));
-            service.update(meal, getUserId());
+            update(meal);
         }
 
-        return "redirect:../meals/";
+        return "redirect:/meals";
     }
 }

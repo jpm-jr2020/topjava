@@ -32,4 +32,12 @@ public class UserTestData {
         updated.setCaloriesPerDay(330);
         return updated;
     }
+
+    public static User getUpdated2() {
+        User updated = new User(ADMIN);
+        updated.setName("UpdatedName2");
+        updated.setCaloriesPerDay(333);
+        updated.setRoles(Collections.singleton(Role.ROLE_USER));
+        return updated;
+    }
 }

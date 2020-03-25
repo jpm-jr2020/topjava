@@ -14,6 +14,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
+
 public abstract class AbstractMealController {
     protected static final Logger log = LoggerFactory.getLogger(MealRestController.class);
 
@@ -60,5 +62,18 @@ public abstract class AbstractMealController {
         int userId = getUserId();
         log.info("delete meal {} for user {}", id, userId);
         service.delete(id, userId);
+    }
+
+    protected Meal create(Meal meal) {
+        int userId = getUserId();
+        checkNew(meal);
+        log.info("create {} for user {}", meal, userId);
+        return service.create(meal, userId);
+    }
+
+    protected void update(Meal meal) {
+        int userId = getUserId();
+        log.info("update {} for user {}", meal, userId);
+        service.update(meal, userId);
     }
 }

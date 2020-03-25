@@ -2,9 +2,19 @@ package ru.javawebinar.topjava.util;
 
 
 import ru.javawebinar.topjava.model.AbstractBaseEntity;
+import ru.javawebinar.topjava.repository.SkipValidation;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import javax.validation.*;
+import java.util.Set;
+
 public class ValidationUtil {
+    private static Validator validator;
+
+    static {
+        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
+    }
 
     private ValidationUtil() {
     }
@@ -53,5 +63,10 @@ public class ValidationUtil {
             result = cause;
         }
         return result;
+    }
+
+    public static <T> void validate(T entity) {
+        Set<ConstraintViolation<T>> violations = validator.validate(entity, SkipValidation.class);
+        if (!violations.isEmpty()) throw new ConstraintViolationException(violations);
     }
 }

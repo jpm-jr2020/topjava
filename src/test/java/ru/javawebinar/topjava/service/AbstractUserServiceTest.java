@@ -3,8 +3,6 @@ package ru.javawebinar.topjava.service;
 import org.junit.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.model.Role;
@@ -28,8 +26,6 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Autowired
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private UserRepository repository;
-    @Autowired
-    protected Environment environment;
 
     @Autowired
     private CacheManager cacheManager;
@@ -97,8 +93,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void getByEmail() throws Exception {
-        User user = service.getByEmail("user@yandex.ru");
-        USER_MATCHER.assertMatch(user, USER);
+        User user = service.getByEmail("admin@gmail.com");
+        USER_MATCHER.assertMatch(user, ADMIN);
     }
 
     @Test
@@ -106,6 +102,13 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         User updated = getUpdated();
         service.update(updated);
         USER_MATCHER.assertMatch(service.get(USER_ID), updated);
+    }
+
+    @Test
+    public void update2() throws Exception {
+        User updated = getUpdated2();
+        service.update(updated);
+        USER_MATCHER.assertMatch(service.get(ADMIN_ID), updated);
     }
 
     @Test

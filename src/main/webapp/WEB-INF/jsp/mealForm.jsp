@@ -17,7 +17,7 @@
     <h2>${meal.id == null ? localeNew : localeEdit}</h2>
 
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
-    <form method="post" action="./">
+    <form method="post" action=".">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt><spring:message code="meal.date"/>:</dt>

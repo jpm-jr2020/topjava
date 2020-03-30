@@ -64,6 +64,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+
     void createWithLocation() throws Exception {
         User newUser = UserTestData.getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
@@ -77,7 +78,6 @@ class AdminRestControllerTest extends AbstractControllerTest {
         USER_MATCHER.assertMatch(created, newUser);
         USER_MATCHER.assertMatch(userService.get(newId), newUser);
     }
-
     @Test
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL))

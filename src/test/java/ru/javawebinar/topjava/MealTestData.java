@@ -3,7 +3,9 @@ package ru.javawebinar.topjava;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
 
+import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static java.time.LocalDateTime.of;
@@ -27,6 +29,11 @@ public class MealTestData {
     public static final Meal ADMIN_MEAL2 = new Meal(ADMIN_MEAL_ID + 1, of(2020, Month.JANUARY, 31, 21, 0), "Админ ужин", 1500);
 
     public static final List<Meal> MEALS = List.of(MEAL7, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
+
+    public static final String startDate = LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    public static final String endDate = LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    public static final String startTime = LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    public static final String endTime = LocalDateTime.of(2020, Month.JANUARY, 31, 19, 30).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
     public static Meal getNew() {
         return new Meal(null, of(2020, Month.JUNE, 1, 18, 0), "Созданный ужин", 300);

@@ -8,10 +8,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import ru.javawebinar.topjava.util.format.DateAndTimeFormat;
 
 import java.net.URI;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -39,11 +40,11 @@ public class MealRestController extends AbstractMealController {
     }
 
     @GetMapping("/by")
-    public List<MealTo> getFiltered(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
-                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {
-        return super.getBetween(startDate.toLocalDate(), startTime.toLocalTime(), endDate.toLocalDate(), endTime.toLocalTime());
+    public List<MealTo> getFiltered(@RequestParam(required = false) @DateAndTimeFormat LocalDate startDate,
+                                   @RequestParam(required = false) @DateAndTimeFormat LocalTime startTime,
+                                   @RequestParam(required = false) @DateAndTimeFormat LocalDate endDate,
+                                   @RequestParam(required = false) @DateAndTimeFormat LocalTime endTime) {
+        return super.getBetween(startDate, startTime, endDate, endTime);
     }
 
     @Override

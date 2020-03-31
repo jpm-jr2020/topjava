@@ -61,12 +61,22 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getFiltered() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "by?startDate=" + startDate + "&startTime=" + startTime +
-                "&endDate=" + endDate + "&endTime=" + endTime))
+        perform(MockMvcRequestBuilders.get(REST_URL + "by?startDate=" + restStartDate + "&startTime=" + restStartTime +
+                "&endDate=" + restEndDate + "&endTime=" + restEndTime))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MEALTO_MATCHER.contentJson(MealsUtil.getFilteredTos(List.of(MEAL7, MEAL6, MEAL5, MEAL4), USER.getCaloriesPerDay(),
                         LocalDateTime.parse(startTime).toLocalTime(), LocalDateTime.parse(endTime).toLocalTime())));
+    }
+
+    @Test
+    void getFilteredwithNulls() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "by?startDate=&startTime=" + restStartTime +
+                "&endDate=" + restEndDate))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEALTO_MATCHER.contentJson(MealsUtil.getFilteredTos(List.of(MEAL7, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1), USER.getCaloriesPerDay(),
+                        LocalDateTime.parse(startTime).toLocalTime(), null)));
     }
 
     @Test

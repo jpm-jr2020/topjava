@@ -8,8 +8,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
 
-import ru.javawebinar.topjava.util.format.DateAndTimeFormat;
-
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -40,10 +38,10 @@ public class MealRestController extends AbstractMealController {
     }
 
     @GetMapping("/by")
-    public List<MealTo> getFiltered(@RequestParam(required = false) @DateAndTimeFormat LocalDate startDate,
-                                   @RequestParam(required = false) @DateAndTimeFormat LocalTime startTime,
-                                   @RequestParam(required = false) @DateAndTimeFormat LocalDate endDate,
-                                   @RequestParam(required = false) @DateAndTimeFormat LocalTime endTime) {
+    public List<MealTo> getFiltered(@RequestParam(required = false) LocalDate startDate,
+                                   @RequestParam(required = false) LocalTime startTime,
+                                   @RequestParam(required = false) LocalDate endDate,
+                                   @RequestParam(required = false) LocalTime endTime) {
         return super.getBetween(startDate, startTime, endDate, endTime);
     }
 

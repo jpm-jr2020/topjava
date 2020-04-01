@@ -28,6 +28,6 @@ public class DateAndTimeFormatAnnotationFormatterFactory implements AnnotationFo
     }
 
     private Formatter<?> getDateFormatter(DateAndTimeFormat annotation, Class<?> fieldType) {
-        return fieldType.getSimpleName().equals("LocalDate") ? new DateFormatter() : new TimeFormatter();
+        return fieldType.equals(LocalDate.class) ? new DateFormatter() : new TimeFormatter();
     }
 }

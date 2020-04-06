@@ -34,3 +34,8 @@ $(function () {
         }
     );
 });
+
+function clearFilter() {
+    $('#filterForm').find(":input").val("");
+    updateTable();
+}

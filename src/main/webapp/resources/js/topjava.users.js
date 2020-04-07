@@ -39,4 +39,18 @@ $(function () {
             })
         }
     );
+
+    $(".toggle").click(toggleActive);
 });
+
+function toggleActive() {
+    var id = $(this).parents('tr').attr("id");
+    var newActive = $(this).prop("checked");
+    $.ajax({
+        url: context.ajaxUrl + id + "/" + newActive,
+        type: "PUT"
+    }).done(function () {
+        updateTable();
+        successNoty("Updated");
+    });
+}

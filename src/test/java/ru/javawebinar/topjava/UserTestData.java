@@ -28,4 +28,10 @@ public class UserTestData {
         updated.setRoles(Collections.singletonList(Role.ROLE_ADMIN));
         return updated;
     }
+
+    public static User getDisabled() {
+        User disabled = new User(USER);
+        disabled.setEnabled(false);
+        return disabled;
+    }
 }

@@ -32,8 +32,8 @@ function deleteRow(id) {
     });
 }
 
-function updateTable() {
-    $.get(context.ajaxUrl, $('#filterForm').serialize(), function (data) {
+function updateTable(params) {
+    $.get(context.ajaxUrl, params, function (data) {
         context.datatableApi.clear().rows.add(data).draw();
     });
 }

@@ -50,7 +50,7 @@ function toggleActive() {
         url: context.ajaxUrl + id + "/" + newActive,
         type: "PUT"
     }).done(function () {
-        updateTable();
+        updateTable("");
         successNoty("Updated");
     });
 }

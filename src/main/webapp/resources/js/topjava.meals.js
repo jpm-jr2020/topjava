@@ -35,7 +35,11 @@ $(function () {
     );
 });
 
+function applyFilter() {
+    updateTable($('#filterForm').serialize());
+}
+
 function clearFilter() {
     $('#filterForm').find(":input").val("");
-    updateTable();
+    updateTable("");
 }

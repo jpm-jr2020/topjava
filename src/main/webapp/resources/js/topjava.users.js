@@ -44,13 +44,19 @@ $(function () {
 });
 
 function toggleActive() {
-    var id = $(this).parents('tr').attr("id");
+    var input = $(this);
+    var tr = input.parents('tr');
+    var id = tr.attr("id");
     var newActive = $(this).prop("checked");
+
+    input.prop("checked", !newActive);
+
     $.ajax({
         url: context.ajaxUrl + id + "/" + newActive,
         type: "PUT"
     }).done(function () {
-        updateTable("");
-        successNoty("Updated");
+        tr.attr("data-userEnabled", newActive);
+        input.prop("checked", newActive);
+        successNoty(newActive ? "Enabled" : "Disabled");
     });
 }

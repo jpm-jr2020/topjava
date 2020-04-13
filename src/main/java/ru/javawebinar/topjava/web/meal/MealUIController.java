@@ -8,12 +8,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.web.AjaxUtil;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.StringJoiner;
 
 @RestController
 @RequestMapping("/ajax/profile/meals")
@@ -41,12 +41,9 @@ public class MealUIController extends AbstractMealController {
     @PostMapping
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public ResponseEntity<String> createOrUpdate(@Valid MealTo mealTo, BindingResult result) {
-        if (result.hasErrors()) {
-            StringJoiner joiner = new StringJoiner("<br>");
-            result.getFieldErrors().forEach(
-                    fe -> joiner.add(String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
-            );
-            return ResponseEntity.unprocessableEntity().body(joiner.toString());
+        ResponseEntity<String> responseEntity = AjaxUtil.checkBinding(result).orElse(null);
+        if (responseEntity != null) {
+            return responseEntity;
         }
 
         if(mealTo.isNew()) {

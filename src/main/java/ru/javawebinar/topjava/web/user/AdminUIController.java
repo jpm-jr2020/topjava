@@ -38,7 +38,7 @@ public class AdminUIController extends AbstractUserController {
     @PostMapping
     public ResponseEntity<String> createOrUpdate(@Valid UserTo userTo, BindingResult result) {
         ResponseEntity<String> responseEntity = AjaxUtil.checkBinding(result).orElse(null);
-        if (responseEntity == null) {
+        if (responseEntity != null) {
             return responseEntity;
         }
         if (userTo.isNew()) {

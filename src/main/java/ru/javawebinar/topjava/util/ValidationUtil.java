@@ -79,15 +79,12 @@ public class ValidationUtil {
         }
     }
 
-    public static Optional<ResponseEntity<String>> checkBinding(BindingResult result) {
-        if (result.hasErrors()) {
-            StringJoiner joiner = new StringJoiner("<br>");
-            result.getFieldErrors().forEach(
-                    fe -> joiner.add(String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
-            );
-            return Optional.of(ResponseEntity.unprocessableEntity().body(joiner.toString()));
-        } else {
-            return Optional.empty();
-        }
+    public static ResponseEntity<String> getBindingErrors(BindingResult result) {
+        StringJoiner joiner = new StringJoiner("<br>");
+        result.getFieldErrors().forEach(
+                fe -> joiner.add(String.format("[%s] %s", fe.getField(),
+                        ("calories".equals(fe.getField())) && ("".equals(fe.getRejectedValue())) ? "не должно быть пустым" : fe.getDefaultMessage()))
+        );
+        return ResponseEntity.unprocessableEntity().body(joiner.toString());
     }
 }

@@ -75,6 +75,7 @@
     </div>
 </div>
 <jsp:include page="fragments/footer.jsp"/>
+<jsp:include page="fragments/i18n.jsp"/>
 </body>
 <script>
     i18n["addTitle"] = '<spring:message code="user.add"/>';

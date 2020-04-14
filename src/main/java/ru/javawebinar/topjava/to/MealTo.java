@@ -14,27 +14,21 @@ import java.util.Objects;
 public class MealTo extends BaseTo implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @NotNull
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private final LocalDateTime dateTime;
 
-    @NotBlank
-    @Size(min = 2, max = 120)
     private final String description;
 
-    @NotNull
-    @Range(min = 10, max = 5000)
     private final int calories;
 
     private final boolean excess;
 
     @ConstructorProperties({"id", "dateTime", "description", "calories", "excess"})
-    public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, Boolean excess) {
+    public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, boolean excess) {
         super(id);
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
-        this.excess = excess == null ? false : excess;
+        this.excess = excess;
     }
 
     public LocalDateTime getDateTime() {

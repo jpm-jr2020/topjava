@@ -22,7 +22,7 @@ function updateRow(id) {
     $.get(context.ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
             if (key === "dateTime") {
-                value = value.replace("T"," ").substring(0,16);
+                value = convertDate(value);
             }
             form.find("input[name='" + key + "']").val(value);
         });
@@ -96,4 +96,8 @@ function renderDeleteBtn(data, type, row) {
     if (type === "display") {
         return "<a onclick='deleteRow(" + row.id + ");'><span class='fa fa-remove'></span></a>";
     }
+}
+
+function convertDate(date) {
+    return date.replace("T"," ").substring(0,16);
 }

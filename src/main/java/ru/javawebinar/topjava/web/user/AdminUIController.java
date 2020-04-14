@@ -7,7 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
-import ru.javawebinar.topjava.web.AjaxUtil;
+import ru.javawebinar.topjava.util.ValidationUtil;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -37,7 +37,7 @@ public class AdminUIController extends AbstractUserController {
 
     @PostMapping
     public ResponseEntity<String> createOrUpdate(@Valid UserTo userTo, BindingResult result) {
-        ResponseEntity<String> responseEntity = AjaxUtil.checkBinding(result).orElse(null);
+        ResponseEntity<String> responseEntity = ValidationUtil.checkBinding(result).orElse(null);
         if (responseEntity != null) {
             return responseEntity;
         }

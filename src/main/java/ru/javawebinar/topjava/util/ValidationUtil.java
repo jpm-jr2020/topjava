@@ -82,8 +82,7 @@ public class ValidationUtil {
     public static ResponseEntity<String> getBindingErrors(BindingResult result) {
         StringJoiner joiner = new StringJoiner("<br>");
         result.getFieldErrors().forEach(
-                fe -> joiner.add(String.format("[%s] %s", fe.getField(),
-                        ("calories".equals(fe.getField())) && ("".equals(fe.getRejectedValue())) ? "не должно быть пустым" : fe.getDefaultMessage()))
+                fe -> joiner.add(String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
         );
         return ResponseEntity.unprocessableEntity().body(joiner.toString());
     }
